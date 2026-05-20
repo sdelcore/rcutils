@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Software fallback for 64-bit atomic ops. Needed on 32-bit MCU targets
+// (Cortex-M, etc.) where hardware 64-bit atomics aren't available, but
+// conflicts with gcc's built-ins on 64-bit hosts. Skip entirely on
+// native (POSIX-arch) Zephyr targets where the host already provides
+// these as compiler intrinsics.
+#if !defined(CONFIG_ARCH_POSIX)
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -90,3 +97,5 @@ uint64_t __atomic_fetch_add_8(uint64_t *mem, uint64_t val, int model) {
 #ifdef __cplusplus
 }
 #endif
+
+#endif  // !defined(CONFIG_ARCH_POSIX)
