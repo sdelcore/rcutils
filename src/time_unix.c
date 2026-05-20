@@ -25,16 +25,21 @@
 #endif  // defined(__MACH__) && defined(__APPLE__)
 #include <math.h>
 
-#if defined(__ZEPHYR__)
+// On native (POSIX-arch) Zephyr targets like native_sim, the host libc IS
+// the POSIX implementation - including Zephyr's own POSIX shims here would
+// double-define useconds_t and friends against /usr/include/unistd.h. Use
+// host <time.h> in that case; reserve the Zephyr shims for genuine
+// cross-compile targets (ARM/RISC-V/Xtensa) where no host libc is present.
+#if defined(__ZEPHYR__) && !defined(CONFIG_ARCH_POSIX)
 #include <version.h>
 #if ZEPHYR_VERSION_CODE >= ZEPHYR_VERSION(3, 1, 0)
 #include <zephyr/posix/time.h>  //  Points to Zephyr toolchain posix time implementation
 #else
 #include <posix/time.h>  //  Points to Zephyr toolchain posix time implementation
 #endif
-#else  //  #if KERNELVERSION >= ZEPHYR_VERSION(3, 1, 0)
+#else  //  defined(__ZEPHYR__) && !defined(CONFIG_ARCH_POSIX)
 #include <time.h>
-#endif  //  defined(__ZEPHYR__)
+#endif  //  defined(__ZEPHYR__) && !defined(CONFIG_ARCH_POSIX)
 
 #include <errno.h>
 #include <unistd.h>
