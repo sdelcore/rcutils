@@ -31,8 +31,11 @@
 #define RCUTILS_WARN_ON_TRUNCATION 1
 #endif
 
+// See note in include/rcutils/error_handling.h about CONFIG_ARCH_POSIX.
+#if !defined(CONFIG_ARCH_POSIX)
 #ifndef __STDC_WANT_LIB_EXT1__
 #define __STDC_WANT_LIB_EXT1__ 1  // indicate we would like memmove_s if available
+#endif
 #endif
 #include <assert.h>
 #include <stdlib.h>

@@ -22,8 +22,14 @@ extern "C"
 {
 #endif
 
+// Skip the Annex K opt-in on native (POSIX-arch) Zephyr targets - picolibc's
+// headers reference __errno_t/__rsize_t typedefs that aren't provided in
+// that build configuration, so requesting Annex K visibility breaks
+// stdio/stdlib/string.
+#if !defined(CONFIG_ARCH_POSIX)
 #ifndef __STDC_WANT_LIB_EXT1__
 #define __STDC_WANT_LIB_EXT1__ 1  // indicate we would like strnlen_s if available
+#endif
 #endif
 #include <assert.h>
 #include <stdbool.h>
